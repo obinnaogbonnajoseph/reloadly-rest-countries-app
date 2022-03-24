@@ -21,7 +21,21 @@
     "lib": [
       "es2020",
       "dom"
-    ]
+    ],
+    "paths": {
+      "services/*": [
+        "src/app/core/services/*"
+      ],
+      "models/*": [
+        "src/app/core/models/*"
+      ],
+      "components/*": [
+        "src/app/core/components/*"
+      ],
+      "store/*": [
+        "src/app/core/store/*"
+      ]
+    }
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
