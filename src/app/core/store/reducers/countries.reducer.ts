@@ -8,6 +8,7 @@ const initialState: CountryState = {
   countries: [],
   selectedCountry: null,
   loading: false,
+  visitedCountries: new Set([]),
 };
 
 export const countriesReducer = createReducer(
@@ -54,6 +55,7 @@ export const countriesReducer = createReducer(
       ...state,
       selectedCountry: country,
       loading: false,
+      visitedCountries: state.visitedCountries.add(country.name),
     })
   )
 );

@@ -61,4 +61,5 @@ export interface CountryState {
   countries: Country[];
   selectedCountry: Country | null;
   loading: boolean;
+  visitedCountries: Set<CountryName>;
 }
