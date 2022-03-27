@@ -1,27 +1,33 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
-import { countryServiceStub, routerStub } from 'src/app/core/models/model';
-import { CountryService } from 'src/app/core/services/country.service';
-
+import { provideMockStore, MockStore } from '@ngrx/store/testing';
+import { initialState } from 'store/reducers/countries.reducer';
 import { CountryComponent } from './country.component';
+import { CountriesSelector } from 'store/selectors/countries.selector';
+import { mockCountry } from 'src/app/core/mocks/mock.model';
+import { Country } from 'models/model';
 
 describe('CountryComponent', () => {
   let component: CountryComponent;
   let fixture: ComponentFixture<CountryComponent>;
-  let countryService: Partial<CountryService>;
+  let store: MockStore;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [CountryComponent],
       providers: [
-        {
-          provide: CountryService,
-          useValue: countryServiceStub,
-        },
-        {
-          provide: Router,
-          useValue: routerStub,
-        },
+        provideMockStore({
+          initialState,
+          selectors: [
+            {
+              selector: CountriesSelector.selectSelectedCountry,
+              value: mockCountry,
+            },
+            {
+              selector: CountriesSelector.selectLoading,
+              value: false,
+            },
+          ],
+        }),
       ],
     }).compileComponents();
   });
@@ -29,15 +35,36 @@ describe('CountryComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(CountryComponent);
     component = fixture.componentInstance;
-    countryService = fixture.debugElement.injector.get(CountryService);
+    store = TestBed.inject(MockStore);
     fixture.detectChanges();
   });
+
+  afterEach(() => store?.resetSelectors());
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should get country data', () => {
-    const countryData = component.getCountryData();
+  it('should fetch country from store', (done: DoneFn) => {
+    component.country$.subscribe((country) => {
+      expect(country?.borders)
+        .withContext('should expect country data to equal store data')
+        .toEqual(mockCountry.borders);
+      done();
+    });
+  });
+
+  it('should fetch loading from store', (done: DoneFn) => {
+    component.loading$.subscribe((loading) => {
+      expect(loading)
+        .withContext('should expect loading to equal store data')
+        .toEqual(false);
+      done();
+    });
+  });
+
+  it('should return border countries', () => {
+    const borderCountries = component.borderCountries(mockCountry as Country);
+    expect(borderCountries).toEqual(mockCountry.borders as string[]);
   });
 });

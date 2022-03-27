@@ -6,7 +6,7 @@ import { debounceTime, distinctUntilChanged, fromEvent, map } from 'rxjs';
 import { FetchCountriesActions } from 'store/actions/fetch-countries.action';
 import { SearchCountriesActions } from 'store/actions/search-countries.action';
 import { SelectCountryActions } from 'store/actions/select-country.action';
-import { CountriesSelector } from 'store/selectors/coutries.selector';
+import { CountriesSelector } from 'store/selectors/countries.selector';
 
 @Component({
   selector: 'app-countries',

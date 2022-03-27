@@ -15,9 +15,10 @@ import {
 } from 'store/actions/search-countries.action';
 import {
   SelectCountryActions,
+  SelectCountryError,
   SelectCountrySuccess,
 } from 'store/actions/select-country.action';
-import { CountriesSelector } from 'store/selectors/coutries.selector';
+import { CountriesSelector } from 'store/selectors/countries.selector';
 
 @Injectable()
 export class CountriesEffects {
@@ -58,7 +59,7 @@ export class CountriesEffects {
       ),
       mergeMap(([action, countries]) => {
         const filteredCountries = countries.filter((country) =>
-          country.name.includes(action.name)
+          country.name.toLowerCase().includes(action.name.toLowerCase())
         );
         return of({
           type: SearchCountriesSuccess,
@@ -69,7 +70,7 @@ export class CountriesEffects {
     );
   });
 
-  selectCountries$ = createEffect(() => {
+  selectCountry$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(SelectCountryActions.selectCountry),
       concatLatestFrom(() =>
@@ -77,14 +78,14 @@ export class CountriesEffects {
       ),
       mergeMap(([action, countries]) => {
         const selectedCountry = countries.find(
-          (country) => country.name === action.name
+          (country) => country.name.toLowerCase() === action.name.toLowerCase()
         );
         return of({
           type: SelectCountrySuccess,
           payload: selectedCountry,
         });
       }),
-      catchError(() => of({ type: SearchCountriesError }))
+      catchError(() => of({ type: SelectCountryError }))
     );
   });
 }

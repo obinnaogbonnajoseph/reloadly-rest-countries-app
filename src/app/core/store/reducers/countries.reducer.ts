@@ -4,7 +4,7 @@ import { FetchCountriesActions } from 'store/actions/fetch-countries.action';
 import { SearchCountriesActions } from 'store/actions/search-countries.action';
 import { SelectCountryActions } from 'store/actions/select-country.action';
 
-const initialState: CountryState = {
+export const initialState: CountryState = {
   countries: [],
   selectedCountry: null,
   loading: false,
@@ -35,11 +35,13 @@ export const countriesReducer = createReducer(
   ),
   on(
     SearchCountriesActions.searchCountriesSuccess,
-    (state, { countries }): CountryState => ({
-      ...state,
-      countries,
-      loading: false,
-    })
+    (state, { countries }): CountryState => {
+      return {
+        ...state,
+        countries,
+        loading: false,
+      };
+    }
   ),
   on(
     SearchCountriesActions.searchCountriesError,
@@ -53,9 +55,11 @@ export const countriesReducer = createReducer(
     SelectCountryActions.selectCountrySuccess,
     (state, { country }): CountryState => ({
       ...state,
-      selectedCountry: country,
+      selectedCountry: country ?? null,
       loading: false,
-      visitedCountries: state.visitedCountries.add(country.name),
+      visitedCountries: country
+        ? state.visitedCountries.add(country.name)
+        : state.visitedCountries,
     })
   )
 );

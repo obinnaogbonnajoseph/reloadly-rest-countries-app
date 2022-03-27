@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Country } from 'src/app/core/models/model';
-import { CountriesSelector } from 'store/selectors/coutries.selector';
+import { CountriesSelector } from 'store/selectors/countries.selector';
 
 @Component({
   selector: 'app-country',
