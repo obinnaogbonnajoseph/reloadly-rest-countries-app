@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class CountryService {
-  baseurl = 'https://restcountries.com/v2/';
+  baseurl = '/api';
 
   constructor(private http: HttpClient) {}
 
