@@ -8,17 +8,15 @@ import { CountryService } from 'services/country.service';
 import { mockCountry } from 'src/app/core/mocks/mock.model';
 import {
   FetchCountriesActions,
-  FetchCountriesError,
-  FetchCountriesSuccess,
+  FetchCountriesTypes,
 } from 'store/actions/fetch-countries.action';
 import {
   SearchCountriesActions,
-  SearchCountriesSuccess,
+  SearchCountriesTypes,
 } from 'store/actions/search-countries.action';
 import {
   SelectCountryActions,
-  SelectCountryError,
-  SelectCountrySuccess,
+  SelectCountryTypes,
 } from 'store/actions/select-country.action';
 import { CountriesEffects } from 'store/effects/countries.effects';
 import { CountriesSelector } from 'store/selectors/countries.selector';
@@ -65,7 +63,7 @@ describe('CountriesEffects', () => {
     countryService.getAll.and.returnValue(of([mockCountry]));
     effects.fetchCountries$.subscribe((action) => {
       expect(action).toEqual({
-        type: FetchCountriesSuccess,
+        type: FetchCountriesTypes.FETCH_COUNTRIES_SUCCESS,
         payload: [mockCountry as Country],
       });
       done();
@@ -77,7 +75,7 @@ describe('CountriesEffects', () => {
     countryService.getRegion.and.returnValue(of([mockCountry]));
     effects.fetchCountries$.subscribe((action) => {
       expect(action).toEqual({
-        type: FetchCountriesSuccess,
+        type: FetchCountriesTypes.FETCH_COUNTRIES_SUCCESS,
         payload: [mockCountry as Country],
       });
       done();
@@ -90,7 +88,9 @@ describe('CountriesEffects', () => {
       throwError(() => new Error('Could not Fetch countries'))
     );
     effects.fetchCountries$.subscribe((action) => {
-      expect(action).toEqual({ type: FetchCountriesError });
+      expect(action).toEqual({
+        type: FetchCountriesTypes.FETCH_COUNTRIES_ERROR,
+      });
     });
     done();
   });
@@ -99,7 +99,7 @@ describe('CountriesEffects', () => {
     actions$ = of(SearchCountriesActions.searchCountries({ name: 'Nigeria' }));
     effects.searchCountries$.subscribe((action) => {
       expect(action).toEqual({
-        type: SearchCountriesSuccess,
+        type: SearchCountriesTypes.SEARCH_COUNTRIES_SUCCESS,
         payload: [mockCountry as Country],
       });
       done();
@@ -110,7 +110,7 @@ describe('CountriesEffects', () => {
     actions$ = of(SelectCountryActions.selectCountry({ name: 'Nigeria' }));
     effects.selectCountry$.subscribe((action) => {
       expect(action).toEqual({
-        type: SelectCountrySuccess,
+        type: SelectCountryTypes.SELECT_COUNTRY_SUCCESS,
         payload: mockCountry as Country,
       });
       done();

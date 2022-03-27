@@ -1,18 +1,20 @@
 import { createAction, props } from '@ngrx/store';
 import { Country } from 'models/model';
 
-export const SelectCountry = `[Country] Select Country`;
-export const SelectCountrySuccess = `[Country] Select Country Success`;
-export const SelectCountryError = `[Country] Select Country Error`;
+export enum SelectCountryTypes {
+  SELECT_COUNTRY = `[Country] Select Country`,
+  SELECT_COUNTRY_SUCCESS = `[Country] Select Country Success`,
+  SELECT_COUNTRY_ERROR = `[Country] Select Country Error`,
+}
 
 export namespace SelectCountryActions {
   export const selectCountry = createAction(
-    SelectCountry,
+    SelectCountryTypes.SELECT_COUNTRY,
     props<{ name: string }>()
   );
 
   export const selectCountrySuccess = createAction(
-    SelectCountry,
+    SelectCountryTypes.SELECT_COUNTRY_SUCCESS,
     props<{ country: Country }>()
   );
 }

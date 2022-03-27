@@ -5,18 +5,15 @@ import { catchError, map, mergeMap, of } from 'rxjs';
 import { CountryService } from 'services/country.service';
 import {
   FetchCountriesActions,
-  FetchCountriesError,
-  FetchCountriesSuccess,
+  FetchCountriesTypes,
 } from 'store/actions/fetch-countries.action';
 import {
   SearchCountriesActions,
-  SearchCountriesError,
-  SearchCountriesSuccess,
+  SearchCountriesTypes,
 } from 'store/actions/search-countries.action';
 import {
   SelectCountryActions,
-  SelectCountryError,
-  SelectCountrySuccess,
+  SelectCountryTypes,
 } from 'store/actions/select-country.action';
 import { CountriesSelector } from 'store/selectors/countries.selector';
 
@@ -35,19 +32,19 @@ export class CountriesEffects {
         if (action?.region) {
           return this.countryService.getRegion(action.region).pipe(
             map((countries) => ({
-              type: FetchCountriesSuccess,
+              type: FetchCountriesTypes.FETCH_COUNTRIES_SUCCESS,
               payload: countries,
             }))
           );
         }
         return this.countryService.getAll().pipe(
           map((countries) => ({
-            type: FetchCountriesSuccess,
+            type: FetchCountriesTypes.FETCH_COUNTRIES_SUCCESS,
             payload: countries,
           }))
         );
       }),
-      catchError(() => of({ type: FetchCountriesError }))
+      catchError(() => of({ type: FetchCountriesTypes.FETCH_COUNTRIES_ERROR }))
     );
   });
 
@@ -62,11 +59,13 @@ export class CountriesEffects {
           country.name.toLowerCase().includes(action.name.toLowerCase())
         );
         return of({
-          type: SearchCountriesSuccess,
+          type: SearchCountriesTypes.SEARCH_COUNTRIES_SUCCESS,
           payload: filteredCountries,
         });
       }),
-      catchError(() => of({ type: SearchCountriesError }))
+      catchError(() =>
+        of({ type: SearchCountriesTypes.SEARCH_COUNTRIES_ERROR })
+      )
     );
   });
 
@@ -81,11 +80,11 @@ export class CountriesEffects {
           (country) => country.name.toLowerCase() === action.name.toLowerCase()
         );
         return of({
-          type: SelectCountrySuccess,
+          type: SelectCountryTypes.SELECT_COUNTRY_SUCCESS,
           payload: selectedCountry,
         });
       }),
-      catchError(() => of({ type: SelectCountryError }))
+      catchError(() => of({ type: SelectCountryTypes.SELECT_COUNTRY_ERROR }))
     );
   });
 }
