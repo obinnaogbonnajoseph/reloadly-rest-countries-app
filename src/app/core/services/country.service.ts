@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Country, Region } from 'models/model';
 import { Observable, of } from 'rxjs';
@@ -6,7 +7,7 @@ import { Observable, of } from 'rxjs';
   providedIn: 'root',
 })
 export class CountryService {
-  constructor() {}
+  constructor(private http: HttpClient) {}
 
   getAll(): Observable<Country[]> {
     return of([]);

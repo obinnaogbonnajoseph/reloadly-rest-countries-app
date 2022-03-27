@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Actions, concatLatestFrom, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
-import { catchError, map, mergeMap, of } from 'rxjs';
+import { catchError, map, mergeMap, of, take } from 'rxjs';
 import { CountryService } from 'services/country.service';
 import {
   FetchCountriesActions,
@@ -31,6 +31,7 @@ export class CountriesEffects {
       mergeMap((action) => {
         if (action?.region) {
           return this.countryService.getRegion(action.region).pipe(
+            take(1),
             map((countries) => ({
               type: FetchCountriesTypes.FETCH_COUNTRIES_SUCCESS,
               payload: countries,
