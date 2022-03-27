@@ -24,7 +24,8 @@
     ],
     "paths": {
       "services/*": [
-        "src/app/core/services/*"
+        "src/app/core/services/*",
+        "src/app/services/*"
       ],
       "models/*": [
         "src/app/core/models/*"
