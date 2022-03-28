@@ -19,7 +19,7 @@ export const countriesReducer = createReducer(
   ),
   on(
     FetchCountriesActions.fetchCountriesSuccess,
-    (state, { countries }): CountryState => ({
+    (state, { type, countries }): CountryState => ({
       ...state,
       countries,
       loading: false,
@@ -35,13 +35,11 @@ export const countriesReducer = createReducer(
   ),
   on(
     SearchCountriesActions.searchCountriesSuccess,
-    (state, { countries }): CountryState => {
-      return {
-        ...state,
-        countries,
-        loading: false,
-      };
-    }
+    (state, { countries }): CountryState => ({
+      ...state,
+      countries,
+      loading: false,
+    })
   ),
   on(
     SearchCountriesActions.searchCountriesError,
@@ -53,13 +51,21 @@ export const countriesReducer = createReducer(
   ),
   on(
     SelectCountryActions.selectCountrySuccess,
-    (state, { country }): CountryState => ({
-      ...state,
-      selectedCountry: country ?? null,
-      loading: false,
-      visitedCountries: country
-        ? state.visitedCountries.add(country.name)
-        : state.visitedCountries,
-    })
+    (state, { country }): CountryState => {
+      let previsited: string[] = [];
+      if (country) {
+        previsited = Array.from(state.visitedCountries);
+        previsited.push(country?.name);
+      }
+
+      return {
+        ...state,
+        selectedCountry: country ?? null,
+        loading: false,
+        visitedCountries: country
+          ? new Set(previsited)
+          : state.visitedCountries,
+      };
+    }
   )
 );

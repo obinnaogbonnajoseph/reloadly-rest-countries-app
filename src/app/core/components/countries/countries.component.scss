@@ -1,0 +1,28 @@
+.main {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+}
+
+.section {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.row-list {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.country-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.select {
+    cursor: pointer;
+}

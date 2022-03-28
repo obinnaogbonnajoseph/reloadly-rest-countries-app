@@ -18,4 +18,8 @@ export class CountryService {
   getRegion(region: Region): Observable<Country[]> {
     return this.http.get<Country[]>(`${this.baseurl}continent/${region}`);
   }
+
+  searchByName(name: string): Observable<Country[]> {
+    return this.http.get<Country[]>(`${this.baseurl}name/${name}`);
+  }
 }

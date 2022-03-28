@@ -1,1 +1,14 @@
-<p>country works!</p>
+<section style="display: flex; flex-direction: column; padding: 16px; align-items: center;">
+    <button (click)="back()" style="padding: 16px; width: fit-content; margin-bottom: 16px;" mat-button>
+    <mat-icon>arrow_back</mat-icon>&nbsp;Back
+  </button>
+    <div style="display: flex; flex-direction: row; justify-content: space-between;" *ngIf="(country$ | async) as country">
+        <img [src]="country.flags.svg" width="200" height="200" />
+        <section style="padding: 8px; display: flex; flex-direction: column; justify-content: center; margin-left: 16px;">
+            <span><strong>{{country.name | titlecase}}</strong></span>
+            <span><strong>Currency</strong>&nbsp; {{country.currencies[0].name}}</span>
+            <span><strong>Capital</strong>&nbsp;{{country.capital}}</span>
+            <span><strong>Languages</strong>&nbsp; {{getLanguages(country)}}</span>
+        </section>
+    </div>
+</section>

@@ -1,12 +1,16 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { RouterModule, Routes } from '@angular/router';
+import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { CountryComponent } from 'components/country/country.component';
-import { countriesFeature } from 'store/feature/country.feature';
-import { EffectsModule } from '@ngrx/effects';
 import { CountriesEffects } from 'store/effects/countries.effects';
+import { countriesFeature } from 'store/feature/country.feature';
 import { CountriesComponent } from './components/countries/countries.component';
-import { RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
   {
@@ -36,6 +40,10 @@ const routes: Routes = [
     RouterModule.forChild(routes),
     StoreModule.forFeature(countriesFeature),
     EffectsModule.forFeature([CountriesEffects]),
+    MatInputModule,
+    MatSelectModule,
+    MatIconModule,
+    MatCardModule,
   ],
 })
 export class CoreModule {}

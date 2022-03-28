@@ -51,7 +51,10 @@ export type Country = {
   currencies: Currency[];
   languages: Language[];
   translations: { [K: string]: string };
-  flags: string[];
+  flags: {
+    svg: string;
+    png: string;
+  };
   regionalBlocs: RegionalBloc[];
   cioc: string;
   independent: boolean;

@@ -34,14 +34,14 @@ export class CountriesEffects {
             take(1),
             map((countries) => ({
               type: FetchCountriesTypes.FETCH_COUNTRIES_SUCCESS,
-              payload: countries,
+              countries,
             }))
           );
         }
         return this.countryService.getAll().pipe(
           map((countries) => ({
             type: FetchCountriesTypes.FETCH_COUNTRIES_SUCCESS,
-            payload: countries,
+            countries,
           }))
         );
       }),
@@ -52,17 +52,15 @@ export class CountriesEffects {
   searchCountries$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(SearchCountriesActions.searchCountries),
-      concatLatestFrom(() =>
-        this.store.select(CountriesSelector.selectCountries)
-      ),
-      mergeMap(([action, countries]) => {
-        const filteredCountries = countries.filter((country) =>
-          country.name.toLowerCase().includes(action.name.toLowerCase())
+      mergeMap((action) => {
+        const searchParam = action.name.trim() ?? '';
+        return this.countryService.searchByName(searchParam).pipe(
+          take(1),
+          map((countries) => ({
+            type: SearchCountriesTypes.SEARCH_COUNTRIES_SUCCESS,
+            countries,
+          }))
         );
-        return of({
-          type: SearchCountriesTypes.SEARCH_COUNTRIES_SUCCESS,
-          payload: filteredCountries,
-        });
       }),
       catchError(() =>
         of({ type: SearchCountriesTypes.SEARCH_COUNTRIES_ERROR })
@@ -82,7 +80,7 @@ export class CountriesEffects {
         );
         return of({
           type: SelectCountryTypes.SELECT_COUNTRY_SUCCESS,
-          payload: selectedCountry,
+          country: selectedCountry,
         });
       }),
       catchError(() => of({ type: SelectCountryTypes.SELECT_COUNTRY_ERROR }))
