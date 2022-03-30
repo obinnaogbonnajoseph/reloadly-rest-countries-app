@@ -26,3 +26,14 @@
 .select {
     cursor: pointer;
 }
+
+.visited-countries {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+    button {
+        margin-right: 8px;
+        padding: 8px;
+    }
+}

@@ -1,6 +1,6 @@
 <main *ngIf="(countries$ | async) as countries" class="main">
-    <div style="display: flex; flex-direction: row; flex-wrap: wrap; margin-bottom: 16px;" *ngIf="(visitedCountries$ | async) as visitedCountries">
-        <button style="margin-right: 8px; padding: 8px" class="select" (click)="selectCountry(visitedCountry)" *ngFor="let visitedCountry of visitedCountries" mat-button>
+    <div class="visited-countries" *ngIf="(visitedCountries$ | async) as visitedCountries">
+        <button class="select" (click)="selectCountry(visitedCountry)" *ngFor="let visitedCountry of visitedCountries" mat-button>
       {{visitedCountry}}
     </button>
     </div>

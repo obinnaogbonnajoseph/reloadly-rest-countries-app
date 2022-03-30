@@ -1,11 +1,11 @@
-<div style="display: flex; justify-content: center; align-items: center; width: 100%; height: 100%;">
-    <section *ngIf="(country$ | async) as country" style="display: flex; flex-direction: column; padding: 16px; justify-content: flex-start; align-items: center; width: max-content;">
-        <button (click)="back()" style="padding: 8px; width: fit-content; margin-bottom: 16px; align-self: flex-start; cursor: pointer;" mat-button>
+<div class="country-parent">
+    <section *ngIf="(country$ | async) as country">
+        <button (click)="back()" mat-button>
       <mat-icon>arrow_back</mat-icon>&nbsp;Back
     </button>
-        <div *ngIf="country; else noCountry" style="display: flex; flex-direction: row; justify-content: space-between;">
+        <div *ngIf="country; else noCountry" class="country-details">
             <img [src]="country.flags.svg" width="200" height="200" />
-            <section style="padding: 8px; display: flex; flex-direction: column; justify-content: center; margin-left: 16px;">
+            <section>
                 <span><strong>Name</strong>&nbsp;{{country.name | titlecase}}</span>
                 <span><strong>Currency</strong>&nbsp; {{country.currencies?.[0]?.name ?? "N/A"}}</span>
                 <span><strong>Capital</strong>&nbsp;{{country?.capital ?? "N/A"}}</span>
