@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Actions, concatLatestFrom, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
-import { catchError, map, mergeMap, of, take } from 'rxjs';
+import { Country } from 'models/model';
+import { catchError, map, mergeMap, Observable, of, take } from 'rxjs';
 import { CountryService } from 'services/country.service';
 import {
   FetchCountriesActions,
@@ -54,7 +55,7 @@ export class CountriesEffects {
       ofType(SearchCountriesActions.searchCountries),
       mergeMap((action) => {
         const searchParam = action.name.trim() ?? '';
-        return this.countryService.searchByName(searchParam).pipe(
+        return this.searchCountries(searchParam).pipe(
           take(1),
           map((countries) => ({
             type: SearchCountriesTypes.SEARCH_COUNTRIES_SUCCESS,
@@ -67,6 +68,13 @@ export class CountriesEffects {
       )
     );
   });
+
+  private searchCountries(param: string): Observable<Country[]> {
+    if (param) {
+      return this.countryService.searchByName(param);
+    }
+    return this.countryService.getAll();
+  }
 
   selectCountry$ = createEffect(() => {
     return this.actions$.pipe(

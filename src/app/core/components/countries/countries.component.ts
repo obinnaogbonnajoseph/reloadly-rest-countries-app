@@ -2,13 +2,20 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
+  OnDestroy,
   OnInit,
   ViewChild,
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { CountryName, Region } from 'models/model';
-import { debounceTime, distinctUntilChanged, fromEvent, map } from 'rxjs';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  fromEvent,
+  map,
+  takeWhile,
+} from 'rxjs';
 import { FetchCountriesActions } from 'store/actions/fetch-countries.action';
 import { SearchCountriesActions } from 'store/actions/search-countries.action';
 import { SelectCountryActions } from 'store/actions/select-country.action';
@@ -19,9 +26,11 @@ import { CountriesSelector } from 'store/selectors/countries.selector';
   templateUrl: './countries.component.html',
   styleUrls: ['./countries.component.scss'],
 })
-export class CountriesComponent implements OnInit, AfterViewInit {
+export class CountriesComponent implements OnInit, AfterViewInit, OnDestroy {
   countries$ = this.store.select(CountriesSelector.selectCountries);
   loading$ = this.store.select(CountriesSelector.selectLoading);
+  loading = false;
+  isComponentActive = true;
   visitedCountries$ = this.store.select(
     CountriesSelector.selectVisitedCountries
   );
@@ -32,8 +41,15 @@ export class CountriesComponent implements OnInit, AfterViewInit {
 
   constructor(private store: Store, private router: Router) {}
 
+  ngOnDestroy(): void {
+    this.isComponentActive = false;
+  }
+
   ngOnInit(): void {
     this.store.dispatch(FetchCountriesActions.fetchCountries({}));
+    this.loading$
+      .pipe(takeWhile(() => this.isComponentActive))
+      .subscribe((loading) => (this.loading = loading));
   }
 
   ngAfterViewInit(): void {

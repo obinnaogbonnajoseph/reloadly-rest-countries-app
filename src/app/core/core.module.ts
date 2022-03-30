@@ -4,6 +4,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { RouterModule, Routes } from '@angular/router';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
@@ -11,6 +12,7 @@ import { CountryComponent } from 'components/country/country.component';
 import { CountriesEffects } from 'store/effects/countries.effects';
 import { countriesFeature } from 'store/feature/country.feature';
 import { CountriesComponent } from './components/countries/countries.component';
+import { LoadingComponent } from './components/loading/loading.component';
 
 const routes: Routes = [
   {
@@ -34,7 +36,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [CountryComponent, CountriesComponent],
+  declarations: [CountryComponent, CountriesComponent, LoadingComponent],
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
@@ -44,6 +46,7 @@ const routes: Routes = [
     MatSelectModule,
     MatIconModule,
     MatCardModule,
+    MatProgressSpinnerModule,
   ],
 })
 export class CoreModule {}

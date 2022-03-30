@@ -12,7 +12,6 @@ import { CountriesSelector } from 'store/selectors/countries.selector';
 })
 export class CountryComponent {
   country$ = this.store.select(CountriesSelector.selectSelectedCountry);
-  loading$ = this.store.select(CountriesSelector.selectLoading);
 
   constructor(private store: Store, private router: Router) {}
 
@@ -20,10 +19,12 @@ export class CountryComponent {
     return country.borders;
   }
 
-  getLanguages(country: Country): string {
-    return country.languages
-      .map((lang) => new TitleCasePipe().transform(lang.name))
-      .join(',');
+  getLanguages(country: Country): string | null {
+    return (
+      country?.languages
+        .map((lang) => new TitleCasePipe().transform(lang.name))
+        .join(',') ?? null
+    );
   }
 
   back() {
