@@ -5,7 +5,7 @@ import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { Country } from 'models/model';
 import { Observable, of, throwError } from 'rxjs';
 import { CountryService } from 'services/country.service';
-import { mockCountry } from 'src/app/core/mocks/mock.model';
+import { mockCountry } from 'models/mock.model';
 import {
   FetchCountriesActions,
   FetchCountriesTypes,
@@ -31,6 +31,7 @@ describe('CountriesEffects', () => {
     countryService = jasmine.createSpyObj('CountryService', [
       'getAll',
       'getRegion',
+      'searchByName',
     ]);
     TestBed.configureTestingModule({
       providers: [
@@ -67,7 +68,7 @@ describe('CountriesEffects', () => {
       effects.fetchCountries$.subscribe((action) => {
         expect(action).toEqual({
           type: FetchCountriesTypes.FETCH_COUNTRIES_SUCCESS,
-          payload: [mockCountry as Country],
+          countries: [mockCountry as Country],
         });
         done();
       });
@@ -79,7 +80,7 @@ describe('CountriesEffects', () => {
       effects.fetchCountries$.subscribe((action) => {
         expect(action).toEqual({
           type: FetchCountriesTypes.FETCH_COUNTRIES_SUCCESS,
-          payload: [mockCountry as Country],
+          countries: [mockCountry as Country],
         });
         done();
       });
@@ -104,10 +105,25 @@ describe('CountriesEffects', () => {
       actions$ = of(
         SearchCountriesActions.searchCountries({ name: 'Nigeria' })
       );
+      countryService.searchByName.and.returnValue(of([mockCountry as Country]));
+      countryService.getAll.and.returnValue(of([mockCountry as Country]));
       effects.searchCountries$.subscribe((action) => {
         expect(action).toEqual({
           type: SearchCountriesTypes.SEARCH_COUNTRIES_SUCCESS,
-          payload: [mockCountry as Country],
+          countries: [mockCountry as Country],
+        });
+        done();
+      });
+    });
+
+    it('should search countries with empty text and return success', (done: DoneFn) => {
+      actions$ = of(SearchCountriesActions.searchCountries({ name: '' }));
+      countryService.searchByName.and.returnValue(of([mockCountry as Country]));
+      countryService.getAll.and.returnValue(of([mockCountry as Country]));
+      effects.searchCountries$.subscribe((action) => {
+        expect(action).toEqual({
+          type: SearchCountriesTypes.SEARCH_COUNTRIES_SUCCESS,
+          countries: [mockCountry as Country],
         });
         done();
       });
@@ -135,7 +151,7 @@ describe('CountriesEffects', () => {
       effects.selectCountry$.subscribe((action) => {
         expect(action).toEqual({
           type: SelectCountryTypes.SELECT_COUNTRY_SUCCESS,
-          payload: mockCountry as Country,
+          country: mockCountry as Country,
         });
         done();
       });

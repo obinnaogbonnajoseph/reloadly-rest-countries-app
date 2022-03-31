@@ -7,7 +7,7 @@ import {
 
 import { CountryService } from './country.service';
 import { HttpClient } from '@angular/common/http';
-import { mockCountry } from 'src/app/core/mocks/mock.model';
+import { mockCountry } from 'models/mock.model';
 import { Country } from 'models/model';
 
 describe('CountryService', () => {
@@ -35,9 +35,7 @@ describe('CountryService', () => {
       expect(data).toEqual([mockCountry as Country]);
       done();
     });
-    const req = httpTestingController.expectOne(
-      'https://restcountries.com/v2/all'
-    );
+    const req = httpTestingController.expectOne('/apiall');
     req.flush([mockCountry as Country]);
   });
 
@@ -46,9 +44,16 @@ describe('CountryService', () => {
       expect(data).toEqual([mockCountry as Country]);
       done();
     });
-    const req = httpTestingController.expectOne(
-      'https://restcountries.com/v2/continent/africa'
-    );
+    const req = httpTestingController.expectOne('/apicontinent/africa');
+    req.flush([mockCountry as Country]);
+  });
+
+  it('should search by name', (done: DoneFn) => {
+    service.searchByName('Nigeria').subscribe((data) => {
+      expect(data).toEqual([mockCountry as Country]);
+      done();
+    });
+    const req = httpTestingController.expectOne('/apiname/Nigeria');
     req.flush([mockCountry as Country]);
   });
 });

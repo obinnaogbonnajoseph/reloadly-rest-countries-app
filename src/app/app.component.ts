@@ -11,7 +11,7 @@ export class AppComponent implements OnInit {
   darkMode: boolean = false;
   @HostBinding('class') className: 'lightMode' | 'darkMode' = 'lightMode';
 
-  constructor(private overlay: OverlayContainer) {}
+  constructor(public overlay: OverlayContainer) {}
 
   ngOnInit(): void {
     this.overlay.getContainerElement().classList.add('lightMode');

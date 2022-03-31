@@ -15,10 +15,6 @@ export class CountryComponent {
 
   constructor(private store: Store, private router: Router) {}
 
-  borderCountries(country: Country) {
-    return country.borders;
-  }
-
   getLanguages(country: Country): string | null {
     return (
       country?.languages

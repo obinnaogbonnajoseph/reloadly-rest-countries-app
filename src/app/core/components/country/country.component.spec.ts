@@ -3,17 +3,21 @@ import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { initialState } from 'store/reducers/countries.reducer';
 import { CountryComponent } from './country.component';
 import { CountriesSelector } from 'store/selectors/countries.selector';
-import { mockCountry } from 'src/app/core/mocks/mock.model';
+import { Router } from '@angular/router';
+import { mockCountry, routerSpy } from 'models/mock.model';
+import { MatIconModule } from '@angular/material/icon';
 import { Country } from 'models/model';
 
 describe('CountryComponent', () => {
   let component: CountryComponent;
   let fixture: ComponentFixture<CountryComponent>;
   let store: MockStore;
+  let router: Router;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [CountryComponent],
+      imports: [MatIconModule],
       providers: [
         provideMockStore({
           initialState,
@@ -28,6 +32,10 @@ describe('CountryComponent', () => {
             },
           ],
         }),
+        {
+          provide: Router,
+          useValue: routerSpy,
+        },
       ],
     }).compileComponents();
   });
@@ -36,6 +44,7 @@ describe('CountryComponent', () => {
     fixture = TestBed.createComponent(CountryComponent);
     component = fixture.componentInstance;
     store = TestBed.inject(MockStore);
+    router = fixture.debugElement.injector.get(Router);
     fixture.detectChanges();
   });
 
@@ -54,17 +63,17 @@ describe('CountryComponent', () => {
     });
   });
 
-  it('should fetch loading from store', (done: DoneFn) => {
-    component.loading$.subscribe((loading) => {
-      expect(loading)
-        .withContext('should expect loading to equal store data')
-        .toEqual(false);
-      done();
-    });
+  it('should get languages from country', () => {
+    const languages = component.getLanguages(mockCountry as Country);
+    expect(languages).toEqual('English');
   });
 
-  it('should return border countries', () => {
-    const borderCountries = component.borderCountries(mockCountry as Country);
-    expect(borderCountries).toEqual(mockCountry.borders as string[]);
+  it('should go back to countries route', () => {
+    component.back();
+    const routerSpy = router.navigate as jasmine.Spy;
+    const navArgs = routerSpy.calls.all().flatMap((val) => val.args);
+    expect(navArgs)
+      .withContext('should navigate to countries')
+      .toContain(['countries']);
   });
 });

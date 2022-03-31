@@ -28,7 +28,8 @@
         "src/app/services/*"
       ],
       "models/*": [
-        "src/app/core/models/*"
+        "src/app/core/models/*",
+        "src/app/core/mocks/*"
       ],
       "components/*": [
         "src/app/core/components/*"

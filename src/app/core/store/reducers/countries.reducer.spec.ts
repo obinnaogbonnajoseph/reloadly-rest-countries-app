@@ -1,5 +1,5 @@
 import { Country, CountryState } from 'models/model';
-import { mockCountry } from 'src/app/core/mocks/mock.model';
+import { mockCountry } from 'models/mock.model';
 import { FetchCountriesActions } from 'store/actions/fetch-countries.action';
 import { SearchCountriesActions } from 'store/actions/search-countries.action';
 import { SelectCountryActions } from 'store/actions/select-country.action';
