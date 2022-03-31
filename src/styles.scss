@@ -34,9 +34,9 @@ body {
 }
 
 .darkMode {
-    @include mat.all-component-themes($reloadly-rest-countries-app-theme-dark);
+    @include mat.all-component-colors($reloadly-rest-countries-app-theme-dark);
 }
 
 .lightMode {
-    @include mat.all-component-themes($reloadly-rest-countries-app-theme);
+    @include mat.all-component-colors($reloadly-rest-countries-app-theme);
 }
