@@ -2,12 +2,13 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Country, Region } from 'models/model';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CountryService {
-  baseurl = '/api';
+  baseurl = environment.baseUrl;
 
   constructor(private http: HttpClient) {}
 
