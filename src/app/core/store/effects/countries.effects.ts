@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Actions, concatLatestFrom, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { Country } from 'models/model';
-import { catchError, map, mergeMap, Observable, of, take } from 'rxjs';
+import { catchError, map, mergeMap, Observable, of, repeat, take } from 'rxjs';
 import { CountryService } from 'services/country.service';
 import {
   FetchCountriesActions,
@@ -46,7 +46,8 @@ export class CountriesEffects {
           }))
         );
       }),
-      catchError(() => of({ type: FetchCountriesTypes.FETCH_COUNTRIES_ERROR }))
+      catchError(() => of({ type: FetchCountriesTypes.FETCH_COUNTRIES_ERROR })),
+      repeat()
     );
   });
 
@@ -65,7 +66,8 @@ export class CountriesEffects {
       }),
       catchError(() =>
         of({ type: SearchCountriesTypes.SEARCH_COUNTRIES_ERROR })
-      )
+      ),
+      repeat()
     );
   });
 
@@ -91,7 +93,8 @@ export class CountriesEffects {
           country: selectedCountry,
         });
       }),
-      catchError(() => of({ type: SelectCountryTypes.SELECT_COUNTRY_ERROR }))
+      catchError(() => of({ type: SelectCountryTypes.SELECT_COUNTRY_ERROR })),
+      repeat()
     );
   });
 }
