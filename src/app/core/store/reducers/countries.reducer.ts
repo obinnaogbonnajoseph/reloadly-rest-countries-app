@@ -19,7 +19,7 @@ export const countriesReducer = createReducer(
   ),
   on(
     FetchCountriesActions.fetchCountriesSuccess,
-    (state, { type, countries }): CountryState => ({
+    (state, { countries }): CountryState => ({
       ...state,
       countries,
       loading: false,
