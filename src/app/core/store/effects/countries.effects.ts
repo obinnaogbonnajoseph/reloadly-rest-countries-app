@@ -26,6 +26,23 @@ export class CountriesEffects {
     private store: Store
   ) {}
 
+  fetchCountry$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(FetchCountriesActions.fetchCountry),
+      mergeMap((action) =>
+        this.countryService.searchByName(action.name.trim()).pipe(
+          take(1),
+          map((countries) => ({
+            type: FetchCountriesTypes.FETCH_COUNTRY_SUCCESS,
+            country: countries[0],
+          }))
+        )
+      ),
+      catchError(() => of({ type: FetchCountriesTypes.FETCH_COUNTRY_ERROR })),
+      repeat()
+    );
+  });
+
   fetchCountries$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(FetchCountriesActions.fetchCountries),
