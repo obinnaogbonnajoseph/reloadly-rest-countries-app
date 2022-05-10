@@ -3,7 +3,7 @@ import { provideMockActions } from '@ngrx/effects/testing';
 import { Action } from '@ngrx/store';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { Country } from 'models/model';
-import { Observable, of, throwError } from 'rxjs';
+import { firstValueFrom, Observable, of, throwError } from 'rxjs';
 import { CountryService } from 'services/country.service';
 import { mockCountry } from 'models/mock.model';
 import {
@@ -62,111 +62,127 @@ describe('CountriesEffects', () => {
   });
 
   describe('Fetch countries ', () => {
-    it('should fetch countries and dispatch success', (done: DoneFn) => {
+    it('should fetch countries and dispatch success', async () => {
       actions$ = of(FetchCountriesActions.fetchCountries({}));
       countryService.getAll.and.returnValue(of([mockCountry]));
-      effects.fetchCountries$.subscribe((action) => {
+      await firstValueFrom(effects.fetchCountries$).then((action) => {
         expect(action).toEqual({
           type: FetchCountriesTypes.FETCH_COUNTRIES_SUCCESS,
           countries: [mockCountry as Country],
         });
-        done();
       });
     });
 
-    it('should fetch countries by region and dispatch success', (done: DoneFn) => {
+    it('should fetch countries by region and dispatch success', async () => {
       actions$ = of(FetchCountriesActions.fetchCountries({ region: 'africa' }));
       countryService.getRegion.and.returnValue(of([mockCountry]));
-      effects.fetchCountries$.subscribe((action) => {
+      await firstValueFrom(effects.fetchCountries$).then((action) => {
         expect(action).toEqual({
           type: FetchCountriesTypes.FETCH_COUNTRIES_SUCCESS,
           countries: [mockCountry as Country],
         });
-        done();
       });
     });
 
-    it('should fail to fetch countries', (done: DoneFn) => {
+    it('should fail to fetch countries', async () => {
       actions$ = of(FetchCountriesActions.fetchCountries({}));
       countryService.getAll.and.returnValue(
         throwError(() => new Error('Could not Fetch countries'))
       );
-      effects.fetchCountries$.subscribe((action) => {
+      await firstValueFrom(effects.fetchCountries$).then((action) => {
         expect(action).toEqual({
           type: FetchCountriesTypes.FETCH_COUNTRIES_ERROR,
         });
       });
-      done();
+    });
+  });
+
+  describe('Fetch Country', () => {
+    it('should fetch country and dispatch success', async () => {
+      actions$ = of(FetchCountriesActions.fetchCountry({ name: 'Nigeria' }));
+      countryService.searchByName.and.returnValue(of([mockCountry as Country]));
+      await firstValueFrom(effects.fetchCountry$).then((action) => {
+        expect(action).toEqual({
+          type: FetchCountriesTypes.FETCH_COUNTRY_SUCCESS,
+          country: mockCountry as Country,
+        });
+      });
+    });
+    it('should fail to fetch country', async () => {
+      actions$ = of(FetchCountriesActions.fetchCountry({ name: 'Nigeria' }));
+      countryService.searchByName.and.returnValue(
+        throwError(() => new Error('Could not fetch country'))
+      );
+      await firstValueFrom(effects.fetchCountry$).then((action) => {
+        expect(action).toEqual({
+          type: FetchCountriesTypes.FETCH_COUNTRY_ERROR,
+        });
+      });
     });
   });
 
   describe('Search countries ', () => {
-    it('should search countries and dispatch success', (done: DoneFn) => {
+    it('should search countries and dispatch success', async () => {
       actions$ = of(
         SearchCountriesActions.searchCountries({ name: 'Nigeria' })
       );
       countryService.searchByName.and.returnValue(of([mockCountry as Country]));
       countryService.getAll.and.returnValue(of([mockCountry as Country]));
-      effects.searchCountries$.subscribe((action) => {
+      await firstValueFrom(effects.searchCountries$).then((action) => {
         expect(action).toEqual({
           type: SearchCountriesTypes.SEARCH_COUNTRIES_SUCCESS,
           countries: [mockCountry as Country],
         });
-        done();
       });
     });
 
-    it('should search countries with empty text and return success', (done: DoneFn) => {
+    it('should search countries with empty text and return success', async () => {
       actions$ = of(SearchCountriesActions.searchCountries({ name: '' }));
       countryService.searchByName.and.returnValue(of([mockCountry as Country]));
       countryService.getAll.and.returnValue(of([mockCountry as Country]));
-      effects.searchCountries$.subscribe((action) => {
+      await firstValueFrom(effects.searchCountries$).then((action) => {
         expect(action).toEqual({
           type: SearchCountriesTypes.SEARCH_COUNTRIES_SUCCESS,
           countries: [mockCountry as Country],
         });
-        done();
       });
     });
 
-    it('should fail to search countries and dispatch fail action', (done: DoneFn) => {
+    it('should fail to search countries and dispatch fail action', async () => {
       spyOn(store, 'select').and.returnValue(
         throwError(() => new Error('Cannot search countries'))
       );
       actions$ = of(
         SearchCountriesActions.searchCountries({ name: 'Nigeria' })
       );
-      effects.searchCountries$.subscribe((action) => {
+      await firstValueFrom(effects.searchCountries$).then((action) => {
         expect(action).toEqual({
           type: SearchCountriesTypes.SEARCH_COUNTRIES_ERROR,
         });
-        done();
       });
     });
   });
 
   describe('Select Countries', () => {
-    it('should select country and dispatch success', (done: DoneFn) => {
+    it('should select country and dispatch success', async () => {
       actions$ = of(SelectCountryActions.selectCountry({ name: 'Nigeria' }));
-      effects.selectCountry$.subscribe((action) => {
+      await firstValueFrom(effects.selectCountry$).then((action) => {
         expect(action).toEqual({
           type: SelectCountryTypes.SELECT_COUNTRY_SUCCESS,
           country: mockCountry as Country,
         });
-        done();
       });
     });
 
-    it('should fail to select country and dispatch fail action', (done: DoneFn) => {
+    it('should fail to select country and dispatch fail action', async () => {
       spyOn(store, 'select').and.returnValue(
         throwError(() => new Error('Cannot select country'))
       );
       actions$ = of(SelectCountryActions.selectCountry({ name: 'Nigeria' }));
-      effects.selectCountry$.subscribe((action) => {
+      await firstValueFrom(effects.selectCountry$).then((action) => {
         expect(action).toEqual({
           type: SelectCountryTypes.SELECT_COUNTRY_ERROR,
         });
-        done();
       });
     });
   });

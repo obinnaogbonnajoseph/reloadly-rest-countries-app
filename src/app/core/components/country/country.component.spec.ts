@@ -1,12 +1,19 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {
+  ComponentFixture,
+  fakeAsync,
+  TestBed,
+  tick,
+} from '@angular/core/testing';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { initialState } from 'store/reducers/countries.reducer';
 import { CountryComponent } from './country.component';
 import { CountriesSelector } from 'store/selectors/countries.selector';
-import { Router } from '@angular/router';
-import { mockCountry, routerSpy } from 'models/mock.model';
+import { ActivatedRoute, Router } from '@angular/router';
+import { activatedRouteSpy, mockCountry, routerSpy } from 'models/mock.model';
 import { MatIconModule } from '@angular/material/icon';
 import { Country } from 'models/model';
+import { FetchCountriesActions } from 'store/actions/fetch-countries.action';
+import { firstValueFrom } from 'rxjs';
 
 describe('CountryComponent', () => {
   let component: CountryComponent;
@@ -36,6 +43,10 @@ describe('CountryComponent', () => {
           provide: Router,
           useValue: routerSpy,
         },
+        {
+          provide: ActivatedRoute,
+          useValue: activatedRouteSpy,
+        },
       ],
     }).compileComponents();
   });
@@ -54,13 +65,37 @@ describe('CountryComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should fetch country from store', (done: DoneFn) => {
-    component.country$.subscribe((country) => {
+  it('should fetch country from store', async () => {
+    await firstValueFrom(component.country$).then((country) => {
       expect(country?.borders)
         .withContext('should expect country data to equal store data')
         .toEqual(mockCountry.borders);
-      done();
     });
+  });
+
+  describe('it should perform actions on init', () => {
+    beforeEach(() => {
+      spyOn(store, 'dispatch').and.callFake((action: any) => {});
+    });
+    it('should dispatch fetch country action on null country', fakeAsync(() => {
+      store.overrideSelector(CountriesSelector.selectSelectedCountry, null);
+      activatedRouteSpy.snapshot = {
+        params: {
+          name: 'Nigeria',
+        },
+      };
+      component.ngOnInit();
+      tick();
+      expect(store.dispatch).toHaveBeenCalledWith(
+        FetchCountriesActions.fetchCountry({ name: 'Nigeria' })
+      );
+    }));
+
+    it('should not dispatch fetch country action on defined country', fakeAsync(() => {
+      component.ngOnInit();
+      tick();
+      expect(store.dispatch).not.toHaveBeenCalled();
+    }));
   });
 
   it('should get languages from country', () => {
@@ -75,5 +110,10 @@ describe('CountryComponent', () => {
     expect(navArgs)
       .withContext('should navigate to countries')
       .toContain(['countries']);
+  });
+
+  it('should set isComponentActive to false on ngOnDestroy', () => {
+    component.ngOnDestroy();
+    expect(component.isComponentActive).toEqual(false);
   });
 });

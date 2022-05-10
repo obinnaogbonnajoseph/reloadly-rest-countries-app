@@ -1,8 +1,10 @@
 import { TitleCasePipe } from '@angular/common';
-import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
+import { takeWhile } from 'rxjs';
 import { Country } from 'src/app/core/models/model';
+import { FetchCountriesActions } from 'store/actions/fetch-countries.action';
 import { CountriesSelector } from 'store/selectors/countries.selector';
 
 @Component({
@@ -10,10 +12,33 @@ import { CountriesSelector } from 'store/selectors/countries.selector';
   templateUrl: './country.component.html',
   styleUrls: ['./country.component.scss'],
 })
-export class CountryComponent {
+export class CountryComponent implements OnInit, OnDestroy {
   country$ = this.store.select(CountriesSelector.selectSelectedCountry);
+  isComponentActive = true;
 
-  constructor(private store: Store, private router: Router) {}
+  constructor(
+    private store: Store,
+    private router: Router,
+    private activatedRoute: ActivatedRoute
+  ) {}
+
+  ngOnDestroy(): void {
+    this.isComponentActive = false;
+  }
+
+  ngOnInit(): void {
+    this.country$
+      .pipe(takeWhile(() => this.isComponentActive))
+      .subscribe((country) => {
+        if (!country) {
+          this.store.dispatch(
+            FetchCountriesActions.fetchCountry({
+              name: this.activatedRoute.snapshot.params['name'],
+            })
+          );
+        }
+      });
+  }
 
   getLanguages(country: Country): string | null {
     return (

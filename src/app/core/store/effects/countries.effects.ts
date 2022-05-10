@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Actions, concatLatestFrom, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { Country } from 'models/model';
-import { catchError, map, mergeMap, Observable, of, take } from 'rxjs';
+import { catchError, map, mergeMap, Observable, of, repeat, take } from 'rxjs';
 import { CountryService } from 'services/country.service';
 import {
   FetchCountriesActions,
@@ -26,6 +26,23 @@ export class CountriesEffects {
     private store: Store
   ) {}
 
+  fetchCountry$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(FetchCountriesActions.fetchCountry),
+      mergeMap((action) =>
+        this.countryService.searchByName(action.name.trim()).pipe(
+          take(1),
+          map((countries) => ({
+            type: FetchCountriesTypes.FETCH_COUNTRY_SUCCESS,
+            country: countries[0],
+          }))
+        )
+      ),
+      catchError(() => of({ type: FetchCountriesTypes.FETCH_COUNTRY_ERROR })),
+      repeat()
+    );
+  });
+
   fetchCountries$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(FetchCountriesActions.fetchCountries),
@@ -46,7 +63,8 @@ export class CountriesEffects {
           }))
         );
       }),
-      catchError(() => of({ type: FetchCountriesTypes.FETCH_COUNTRIES_ERROR }))
+      catchError(() => of({ type: FetchCountriesTypes.FETCH_COUNTRIES_ERROR })),
+      repeat()
     );
   });
 
@@ -65,7 +83,8 @@ export class CountriesEffects {
       }),
       catchError(() =>
         of({ type: SearchCountriesTypes.SEARCH_COUNTRIES_ERROR })
-      )
+      ),
+      repeat()
     );
   });
 
@@ -91,7 +110,8 @@ export class CountriesEffects {
           country: selectedCountry,
         });
       }),
-      catchError(() => of({ type: SelectCountryTypes.SELECT_COUNTRY_ERROR }))
+      catchError(() => of({ type: SelectCountryTypes.SELECT_COUNTRY_ERROR })),
+      repeat()
     );
   });
 }

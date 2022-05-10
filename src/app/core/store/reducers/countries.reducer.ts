@@ -14,12 +14,28 @@ export const initialState: CountryState = {
 export const countriesReducer = createReducer(
   initialState,
   on(
+    FetchCountriesActions.fetchCountry,
+    (state): CountryState => ({ ...state })
+  ),
+  on(
+    FetchCountriesActions.fetchCountrySuccess,
+    (state, { country }): CountryState => ({
+      ...state,
+      selectedCountry: country,
+      loading: false,
+    })
+  ),
+  on(
+    FetchCountriesActions.fetchCountryError,
+    (state): CountryState => ({ ...state, loading: false })
+  ),
+  on(
     FetchCountriesActions.fetchCountries,
     (state): CountryState => ({ ...state, loading: true })
   ),
   on(
     FetchCountriesActions.fetchCountriesSuccess,
-    (state, { type, countries }): CountryState => ({
+    (state, { countries }): CountryState => ({
       ...state,
       countries,
       loading: false,

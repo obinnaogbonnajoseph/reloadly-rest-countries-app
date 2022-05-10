@@ -9,6 +9,38 @@ import {
 } from 'store/reducers/countries.reducer';
 
 describe('Countries Reducer', () => {
+  describe('Fetch Country ', () => {
+    it('should initiate fetch country and retrieve state immutably', () => {
+      const action = FetchCountriesActions.fetchCountry({ name: 'Nigeria' });
+      const newState = {
+        ...initialState,
+      };
+      const state = countriesReducer(initialState, action);
+      expect(state).toEqual(newState);
+      expect(state).not.toBe(newState);
+    });
+    it('should fetch country successfully and retrieve state immutably', () => {
+      const action = FetchCountriesActions.fetchCountrySuccess({
+        country: mockCountry as Country,
+      });
+      const newState = {
+        ...initialState,
+        selectedCountry: mockCountry as Country,
+      };
+      const state = countriesReducer(initialState, action);
+      expect(state).toEqual(newState);
+      expect(state).not.toBe(newState);
+    });
+    it('should fetch country error and retrieve state immutably', () => {
+      const action = FetchCountriesActions.fetchCountryError();
+      const newState = {
+        ...initialState,
+      };
+      const state = countriesReducer(initialState, action);
+      expect(state).toEqual(newState);
+      expect(state).not.toBe(newState);
+    });
+  });
   describe('Fetch Countries ', () => {
     it('should initiate fetch countries and retrieve state immutably', () => {
       const action = FetchCountriesActions.fetchCountries({});

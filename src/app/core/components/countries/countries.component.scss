@@ -37,3 +37,13 @@
         padding: 8px;
     }
 }
+
+.country-flag {
+    border-radius: 8px;
+    height: 160px;
+}
+
+.country-card {
+    max-width: 220px;
+    background: lighten(gray, 25%);
+}
